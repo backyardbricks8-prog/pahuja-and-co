@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --canvas: #FAF8F5;
+    --canvas-card: #FFFFFF;
+    --navy-deep: #0C1524;
+    --navy-text: #1E293B;
+    --muted-text: #64748B;
+    --hairline: #E7E3D9;
+    --gold-accent: #B88E3E;
+    --gold-subtle: #F6F1E5;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--canvas);
+    color: var(--navy-text);
+  }
+
+  body {
+    background-color: #FAF8F5;
+    color: #1E293B;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: #EBDCBD;
+    color: #0C1524;
+  }
+}
