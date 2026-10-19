@@ -149,7 +149,38 @@ This Next.js repository is 100% ready for deployment on Vercel:
 4. Framework Preset will be automatically detected as **Next.js**.
 5. Under **Environment Variables**, add:
    - `APP_URL`: Your production domain (e.g., `https://www.pahujaandco.com` or Vercel URL).
+   - `GOOGLE_SHEET_WEBHOOK_URL` *(Optional)*: Google Apps Script Web App URL to automatically receive leads in a Google Sheet.
 6. Click **Deploy**. Vercel will run `npm run build` and provision your live website with global edge caching and free SSL.
+
+---
+
+## 📊 Optional: Google Sheets Integration Setup
+
+To automatically capture enquiry form leads in a private Google Sheet:
+
+1. Create a new Google Sheet named **Pahuja & Co. Leads**.
+2. Add header columns in Row 1: `Timestamp`, `Reference ID`, `Full Name`, `Phone`, `Email`, `Service Required`, `Message`.
+3. Go to **Extensions** → **Apps Script** and paste:
+   ```javascript
+   function doPost(e) {
+     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+     var data = JSON.parse(e.postData.contents);
+     sheet.appendRow([
+       data.timestamp,
+       data.referenceId,
+       data.name,
+       data.phone,
+       data.email,
+       data.service,
+       data.message
+     ]);
+     return ContentService.createTextOutput(JSON.stringify({"result": "success"}))
+       .setMimeType(ContentService.MimeType.JSON);
+   }
+   ```
+4. Click **Deploy** → **New Deployment**.
+5. Select **Web app**, set *Execute as*: **Me**, and *Who has access*: **Anyone**.
+6. Copy the Web App URL and add it in your Vercel Project Settings as `GOOGLE_SHEET_WEBHOOK_URL`.
 
 ---
 

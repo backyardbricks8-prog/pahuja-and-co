@@ -150,6 +150,29 @@ export async function POST(req: NextRequest) {
     // Log operational metadata (no sensitive credentials logged)
     console.log(`[Pahuja & Co. Enquiry] Ref: ${referenceId} | Service: ${service} | Client: ${name}`);
 
+    // Optional Forwarding: Google Sheets Webhook / Apps Script Web App
+    const googleSheetWebhook =
+      process.env.GOOGLE_SHEET_WEBHOOK_URL || process.env.GOOGLE_SHEETS_WEBHOOK_URL;
+    if (googleSheetWebhook) {
+      try {
+        await fetch(googleSheetWebhook, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            referenceId,
+            timestamp: new Date().toISOString(),
+            name,
+            phone,
+            email: email || "N/A",
+            service,
+            message,
+          }),
+        });
+      } catch (sheetErr) {
+        console.warn("[Google Sheets Webhook Dispatch Warning]", sheetErr);
+      }
+    }
+
     return NextResponse.json(
       {
         success: true,
